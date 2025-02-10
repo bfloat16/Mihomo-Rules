@@ -51,8 +51,6 @@ const countryRegions = [
 
 function getTestUrlForGroup(groupName) {
 	switch (groupName) {
-	case "Shared Chat":
-		return "https://shared.oaifree.com/";
 	case "Steam":
 		return "https://store.steampowered.com/";
 	case "Telegram":
@@ -76,8 +74,6 @@ function getTestUrlForGroup(groupName) {
 
 function getIconForGroup(groupName) {
 	switch (groupName) {
-	case "Shared Chat":
-		return "https://linux.do/user_avatar/linux.do/neo/144/12_2.png";
 	case "Linux Do":
 		return "https://linux.do/uploads/default/original/3X/9/d/9dd49731091ce8656e94433a26a3ef36062b3994.png";
 	case "Steam":
@@ -105,7 +101,6 @@ function getIconForGroup(groupName) {
 
 const customRules = [
 	"DOMAIN-SUFFIX,linux.do,Linux Do",
-	"DOMAIN-SUFFIX,shared.oaifree.com,Shared Chat",
   "IP-CIDR,183.230.113.152/32,REJECT",
 	"IP-CIDR,1.12.12.12/32,代理模式"
 ];
@@ -432,7 +427,7 @@ function overwriteProxyGroups(params) {
       type: "select",
       icon: "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/speed.svg",
       proxies: ["ALL - 自动选择", ...autoProxyGroups
-        .filter(group => !["Shared Chat", "Steam", "Telegram", "ChatGPT", "Claude", "Spotify", "Google", "Microsoft", "Linux Do"].includes(group.name))
+        .filter(group => !["Steam", "Telegram", "ChatGPT", "Claude", "Spotify", "Google", "Microsoft", "Linux Do"].includes(group.name))
         .map(group => group.name), otherAutoProxyGroup ? otherAutoProxyGroup.name : null].filter(Boolean),
     },
 
@@ -472,25 +467,6 @@ function overwriteProxyGroups(params) {
       hidden: true,
     },
 
-    {
-      name: "Shared Chat",
-      type: "select",
-      url: getTestUrlForGroup("Shared Chat"),
-      icon: getIconForGroup("Shared Chat"),
-      proxies: [
-        "DIRECT",
-        proxyName,
-        "ALL - 自动选择 - Shared Chat", 
-        ...countryRegions
-          .filter(region => availableCountryCodes.has(region.code))
-          .flatMap(region => [
-            `${region.code} - 自动选择 - Shared Chat`,
-            `${region.code} - 手动选择`,
-          ]),
-        otherAutoProxyGroup ? `${otherAutoProxyGroup.name} - Shared Chat` : null,
-      ].filter(Boolean),
-    },
-
     ...["Steam", "Telegram", "ChatGPT", "Claude", "Spotify", "Google", "Microsoft", "Linux Do"].map(groupName => ({
       name: groupName,
       type: "select",
@@ -527,7 +503,7 @@ function overwriteProxyGroups(params) {
     },
   ];
 
-  const websiteSpecificAutoGroups = ["Shared Chat", "Steam", "Telegram", "ChatGPT", "Claude", "Spotify", "Google", "Microsoft", "Linux Do"].flatMap(groupName => {
+  const websiteSpecificAutoGroups = ["Steam", "Telegram", "ChatGPT", "Claude", "Spotify", "Google", "Microsoft", "Linux Do"].flatMap(groupName => {
     return [
       {
         name: `ALL - 自动选择 - ${groupName}`,
@@ -593,10 +569,8 @@ function overwriteDns(params, proxyName) {
     "nameserver-policy": {
       "geosite:cn": cnDnsList,
       "geoip:cn": cnDnsList,
-      "DOMAIN-SUFFIX,shared.oaifree.com": cnDnsList,
       "geosite:geolocation-!cn": trustDnsList,
-      "domain:google.com,facebook.com,youtube.com,twitter.com,github.com,cloudflare.com,jsdelivr.net,hf.space":
-        trustDnsList,
+      "domain:google.com,facebook.com,youtube.com,twitter.com,github.com,cloudflare.com,jsdelivr.net,hf.space": trustDnsList,
     },
     fallback: [],
     "fallback-filter": {
